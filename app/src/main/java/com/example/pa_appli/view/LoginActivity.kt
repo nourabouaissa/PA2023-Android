@@ -1,6 +1,6 @@
 package com.example.pa_appli.view
 
-import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,7 +8,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,8 +15,8 @@ import androidx.lifecycle.lifecycleScope
 import com.example.pa_appli.R
 import com.example.pa_appli.databinding.ActivityLoginBinding
 import com.example.pa_appli.services.LoginViewModelFactory
+import com.example.pa_appli.services.SignUpViewModelFactory
 import com.example.pa_appli.utils.startActivity
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
@@ -30,7 +29,6 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         val username = binding.username
         val password = binding.password
         val login = binding.login
@@ -61,12 +59,17 @@ class LoginActivity : AppCompatActivity() {
                 showLoginFailed(loginResult.error)
             }
             if (loginResult.success != null) {
-                updateUiWithUser(loginResult.success)
+                //stocker les données de l'utilisateur avec shared preference or data store
+                val sharedPref = this?.getSharedPreferences("user_data",Context.MODE_PRIVATE)
+                with (sharedPref?.edit()) {
+                    this?.putString(getString(R.string.user_token), loginResult.success.token)
+                    this?.putString(getString(R.string.user_id), loginResult.success.userId)
+                    this?.apply()
+                }
+                startActivity(ActivityPlayer::class.java)
+                finish()
             }
-            setResult(Activity.RESULT_OK)
 
-            //Complete and destroy login activity once successful
-            finish()
         })
 
         username.afterTextChanged {
@@ -97,7 +100,6 @@ class LoginActivity : AppCompatActivity() {
                 }
                 false
             }
-            startActivity(MainActivity::class.java)
             login.setOnClickListener {
                 loading.visibility = View.VISIBLE
                 lifecycleScope.launch {
@@ -108,18 +110,8 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateUiWithUser(model: LoggedInUserView) {
-        val welcome = getString(R.string.welcome)
-        val displayName = model.displayName
-        // TODO : initiate successful logged in experience
-        Toast.makeText(
-            applicationContext,
-            "$welcome $displayName",
-            Toast.LENGTH_LONG
-        ).show()
-    }
 
-    private fun showLoginFailed(@StringRes errorString: Int) {
+    private fun showLoginFailed( errorString: String) {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
     }
 }
@@ -127,15 +119,4 @@ class LoginActivity : AppCompatActivity() {
 /**
  * Extension function to simplify setting an afterTextChanged action to EditText components.
  */
-fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
-    this.addTextChangedListener(object : TextWatcher {
-        override fun afterTextChanged(editable: Editable?) {
-            afterTextChanged.invoke(editable.toString())
-        }
-
-        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-    })
-}
 

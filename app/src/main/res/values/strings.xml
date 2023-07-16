@@ -5,8 +5,27 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="action_sign_up_short">Sign up</string>
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="user_token">user token</string>
+    <string name="user_id">user id</string>
+    <string name="prompt_password_confirmation">confirmation password</string>
+    <string name="prompt_first_name">First name</string>
+    <string name="prompt_last_name">Last name</string>
+    <string name="prompt_url_image">Url image profile</string>
+    <string name="prompt_username">Username</string>
+    <string name="sign_up_title">Sign up</string>
+    <string name="invalid_email">The email is invalid\n</string>
+    <string name="invalid_first_name">First name too short</string>
+    <string name="invalid_last_name">Last name too short</string>
+    <string name="invalid_confirm_password">confirmation password does not match password or is invalid</string>
+    <string name="invalid_profile_image_url">image invalid</string>
+    <string name="user_data">user_data</string>
+    <string name="action_add_player">add new player</string>
+    <string name="action_add_friend">Ajouter</string>
+    <string name="friends_list">Friends list</string>
+    <string name="prompt_logout">Log out</string>
 </resources>
